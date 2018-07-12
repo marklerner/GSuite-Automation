@@ -2,10 +2,7 @@ package home;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -134,7 +131,6 @@ public class SettingsScraper {
 		driver.get("https://admin.google.com/ac/appslist/core");
 		System.out.println("Loaded apps panel.");
 		// G Suite apps
-//		click("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/table/tbody/tr/td[2]/div/div[1]/div");
 		wait("/html/body/div[8]/c-wiz/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/content/div[2]/div/div[2]/div[2]/div[2]/div/div[2]");
 		pageshot(
 				"/html/body/div[8]/c-wiz/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/content/div[2]/div/div[2]",
@@ -143,7 +139,6 @@ public class SettingsScraper {
 				"/html/body/div[8]/c-wiz/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/content/div[2]/div/div[2]/div[2]/div[2]/div/div[4]");
 		// Additional google services
 		driver.get("https://admin.google.com/ac/appslist/additional");
-//		click("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/table/tbody/tr/td[2]/div/div[2]/div");
 		wait("/html/body/div[8]/c-wiz/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/content/div[2]/div/div[2]/div[2]/div[2]/div");
 		pageshot(
 				"/html/body/div[8]/c-wiz/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/content/div[2]/div[2]/div[2]/div[1]/table",
@@ -152,12 +147,10 @@ public class SettingsScraper {
 				"/html/body/div[8]/c-wiz/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/content/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]");
 		// Marketplace Apps
 		driver.get("https://admin.google.com/AdminHome?hl=en#AppsList:serviceType=MARKETPLACE");
-//		click("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/table/tbody/tr/td[2]/div/div[3]/div");
 		wait("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/div[3]/div/div[3]/div/div[2]/div/div/table/tbody/tr");
 		screenshot("Marketplace Apps");
 		// SAML Apps
 		driver.get("https://admin.google.com/AdminHome?hl=en#AppsList:serviceType=SAML_APPS");
-//		click("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/table/tbody/tr/td[2]/div/div[4]/div");
 		wait("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/div[3]/div/div[3]/div/div[2]/div/div/table/tbody/tr");
 		screenshot("SAML Apps");
 		goToDashboard();
@@ -314,15 +307,13 @@ public class SettingsScraper {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		else {
+		} else {
 			// Get entire page screenshot
-			File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+			File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 			BufferedImage fullImg = null;
 			try {
 				fullImg = ImageIO.read(screenshot);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -331,15 +322,14 @@ public class SettingsScraper {
 
 			// Get width and height of the element
 			int eleWidth = ele.getSize().getWidth();
-			int realHeight = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/div[3]")).getSize().getHeight();
+			int realHeight = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/div[3]"))
+					.getSize().getHeight();
 
 			// Crop the entire page screenshot to get only element screenshot
-			BufferedImage eleScreenshot = fullImg.getSubimage(point.getX(), 97,
-			    eleWidth, realHeight);
+			BufferedImage eleScreenshot = fullImg.getSubimage(point.getX(), 97, eleWidth, realHeight);
 			try {
 				ImageIO.write(eleScreenshot, "png", output);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -354,110 +344,6 @@ public class SettingsScraper {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * opens and dumps the users panel
-	 */
-	public void openUsers() {
-		Date date = new Date();
-		File settings = new File("savedsettings" + date.getTime() + ".txt");
-		PrintWriter writer = null;
-		try {
-			writer = new PrintWriter(settings, "UTF-8");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		// wait until table of users is visible, then get it
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("i3WFpf")));
-		WebElement table = driver.findElement(By.className("i3WFpf"));
-		// get the list of users to click
-		System.out.println("Found Table.");
-		while (true) {
-//			List<WebElement> users = table.findElements(By.tagName("tr"));
-			String username;
-			WebElement user;
-			int i = 1;
-			// add the loop back so it gets all users
-			// for (int i = 1; i < users.size(); i++) {
-			wait.until(ExpectedConditions.elementToBeClickable(table));
-			user = table.findElement(By.xpath("./tbody/tr[" + i + "]/td[2]/span/div/div[2]/div"));
-			user.click();
-			// wait for username to appear
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[8]/c-wiz[2]")));
-			username = driver.findElement(By.xpath(
-					"/html/body/div[8]/c-wiz[2]/div/div[1]/div/div[2]/div/div/div[1]/div/div/content/c-wiz/div/div[1]/div[2]/div[2]/div[1]/content"))
-					.getText();
-			// screenshot the page
-//				screenshot(username);
-			captureSettings(writer);
-			System.out.printf("Captured %s's settings.\n", username);
-			// go back
-			driver.navigate().back();
-			// }
-			wait.until(ExpectedConditions.visibilityOf(table));
-//			WebElement nextButton = driver.findElement(By.xpath("/html/body/div[8]/c-wiz/div/div[1]/div/div[2]/div/div/div/div/div/div/div[3]/div[3]/div[3]/div[2]/div/div[4]"));
-			// fix multiple pages support - add branch back with loop
-//			if (nextButton.getAttribute("aria-disabled").equals("false"))
-//				nextButton.click();
-//			else
-			break;
-		}
-		System.out.println("Collected all data.");
-		writer.close();
-	}
-
-	/**
-	 * scrapes the actual settings from the current page, assuming it is a user page
-	 */
-	private void captureSettings(PrintWriter writer) {
-		// prints the users name in the file
-		writer.println(driver.findElement(By.xpath(
-				"/html/body/div[8]/c-wiz[2]/div/div[1]/div/div[2]/div/div/div[1]/div/div/content/c-wiz/div/div[1]/div[2]/div[2]/div[1]/content"))
-				.getText());
-
-		// open the user information panel
-		System.out.print("Getting User Information...");
-		scrape("/html/body/div[8]/c-wiz[2]/div/div[1]/div/div[2]/div/div/div[2]/div/div/div/content/div/div[2]/div",
-				"/html/body/div[8]/c-wiz[3]/div/div[1]/div/div[2]/div/div/div[2]/div/div/div/content/div/div",
-				"/html/body/div[8]/c-wiz[3]/div/div[1]/div/div[2]/div/div/div[2]/div/div/div/content/div/div/div[2]/div/div",
-				writer);
-
-		// open the security panel
-		System.out.print("Getting Security...");
-		scrape("/html/body/div[8]/c-wiz[2]/div/div[1]/div/div[2]/div/div/div[2]/div/div/div/content/div/c-wiz[2]/div",
-				"/html/body/div[8]/c-wiz[5]/div/div[1]/div/div[2]/div/div/div[2]/div/div/div/content/div/div",
-				"/html/body/div[8]/c-wiz[5]/div/div[1]/div/div[2]/div/div/div[2]/div/div/div/content/div/div/div[2]/div",
-				writer);
-	}
-
-	/**
-	 * pulls the data from the element and dumps it to the printwriter
-	 * 
-	 * @param clickPath
-	 * @param attribute
-	 * @param panelPath
-	 * @param writer
-	 */
-	private void scrape(String clickPath, String attribute, String panelPath, PrintWriter writer) {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		// get the open clicky john
-		WebElement open = driver.findElement(By.xpath(clickPath));
-		// wait till you see the john
-		wait.until(ExpectedConditions.elementToBeClickable(open));
-		wait.until(ExpectedConditions.visibilityOf(open));
-		open.click();
-		// let the damn thing expand
-		wait.until(ExpectedConditions.attributeToBe(By.xpath(attribute), "aria-expanded", "true"));
-		WebElement panel = driver.findElement(By.xpath(panelPath));
-		// dump the text into the file
-		writer.println(panel.getText());
-		// on to da nex one
-		driver.navigate().back();
-		System.out.println("done.");
 	}
 
 	/**
