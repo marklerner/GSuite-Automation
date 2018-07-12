@@ -153,10 +153,12 @@ public class SettingsScraper {
 		// Marketplace Apps
 		driver.get("https://admin.google.com/AdminHome?hl=en#AppsList:serviceType=MARKETPLACE");
 //		click("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/table/tbody/tr/td[2]/div/div[3]/div");
+		wait("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/div[3]/div/div[3]/div/div[2]/div/div/table/tbody/tr");
 		screenshot("Marketplace Apps");
 		// SAML Apps
 		driver.get("https://admin.google.com/AdminHome?hl=en#AppsList:serviceType=SAML_APPS");
 //		click("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/table/tbody/tr/td[2]/div/div[4]/div");
+		wait("/html/body/div[2]/div[2]/div/div[1]/div[5]/div/div/div[3]/div/div[3]/div/div[2]/div/div/table/tbody/tr");
 		screenshot("SAML Apps");
 		goToDashboard();
 	}
